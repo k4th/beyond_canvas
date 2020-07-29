@@ -24,7 +24,7 @@ module BeyondCanvas
       if hashable_resource_params?
         @params.fetch(@resource_name)
       else
-        empty_params
+        @params
       end
     end
 

@@ -15,6 +15,10 @@ module BeyondCanvas
       end
     end
 
+    initializer "beyond_canvas.url_helpers" do
+      BeyondCanvas.include_helpers(BeyondCanvas::Controllers)
+    end
+
     config.before_initialize do
       ActiveSupport.on_load :action_controller do
         include ::BeyondCanvas::Authentication

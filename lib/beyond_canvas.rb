@@ -19,6 +19,10 @@ module BeyondCanvas # :nodoc:
   autoload :AssetRegistration,  'beyond_canvas/asset_registration'
   autoload :Configuration,      'beyond_canvas/configuration'
 
+  module Controllers
+    autoload :Helpers,          'beyond_canvas/controllers/helpers'
+  end
+
   module Models # :nodoc:
     autoload :Authentication,   'beyond_canvas/models/authentication'
     autoload :Shop,             'beyond_canvas/models/shop'
@@ -33,6 +37,11 @@ module BeyondCanvas # :nodoc:
   mattr_accessor :auth_model
   @@auth_model = 'shop' # rubocop:disable Style/ClassVars
 
+  # Define a set of modules that are called when a mapping is added.
+  mattr_reader :helpers
+  @@helpers = Set.new
+  @@helpers << BeyondCanvas::Controllers::Helpers
+
   class << self
     def configuration
       @configuration ||= ::BeyondCanvas::Configuration.new
@@ -41,6 +50,12 @@ module BeyondCanvas # :nodoc:
     def setup
       configuration.setup!
       yield configuration
+    end
+  end
+
+  def self.include_helpers(scope)
+    ActiveSupport.on_load(:action_controller) do
+      include scope::Helpers if defined?(scope::Helpers)
     end
   end
 end

@@ -11,6 +11,7 @@ module ActionDispatch
         BeyondCanvas.use_rails_app_controller = options.present? && options[:controller].present?
 
         set_routes(resource_name, options[:controller]) if BeyondCanvas.use_rails_app_controller
+        BeyondCanvas.helpers.each { |h| h.define_helpers }
       end
 
       def set_routes(resource_name, controller)

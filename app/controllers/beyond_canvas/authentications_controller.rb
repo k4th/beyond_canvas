@@ -10,20 +10,14 @@ module BeyondCanvas
     include ::BeyondCanvas::ResourceManagement
 
     before_action :validate_app_installation_request!, only: :new
-
+    before_action :authenticate_resource!, only: :new
+  
     def new
       self.resource = resource_class.new
     end
 
     def create
-      # Search for the api url. If there is no record it creates a new record.
-      resource_params = new_resource_params
-      self.resource = resource_class.find_or_create_by(beyond_api_url: resource_params[:api_url])
-      # Assign the attributes to the record
-      raise ActiveRecord::RecordNotSaved unless resource.update(resource_params)
-      # Get and save access_token and refresh_token using the authentication code
-      raise BeyondApi::Error if resource.authenticate.is_a?(BeyondApi::Error)
-
+      authenticate_resource!
       redirect_to after_create_path
     rescue ActiveRecord::RecordNotSaved, BeyondApi::Error, StandardError => e
       logger.error "[BeyondCanvas] #{e.message}".red
@@ -35,6 +29,18 @@ module BeyondCanvas
     end
 
     private
+
+    def authenticate_resource!
+      # Search for the api url. If there is no record it creates a new record.
+      resource_params = new_resource_params
+      self.resource = resource_class.find_or_create_by(beyond_api_url: resource_params[:api_url])
+      # Assign the attributes to the record
+      raise ActiveRecord::RecordNotSaved unless resource.update(resource_params)
+      # Get and save access_token and refresh_token using the authentication code
+      raise BeyondApi::Error if resource.authenticate.is_a?(BeyondApi::Error)
+
+      session[:byd_shop_id] = self.resource.id #TODO:
+    end
 
     def new_resource_params
       send "new_#{resource_name}_params"
