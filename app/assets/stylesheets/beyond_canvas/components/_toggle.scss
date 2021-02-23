@@ -1,0 +1,79 @@
+.checked,
+.unchecked {
+  display: inline-block;
+
+  &::after {
+    @include size(22px);
+    align-items: center;
+    border-radius: 100%;
+    color: $white;
+    display: flex;
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 700;
+    justify-content: center;
+  }
+}
+
+.checked {
+  &::after {
+    color: $checkbox-checked;
+    content: '\f058';
+    font-size: 0.7rem;
+  }
+}
+
+.unchecked {
+  &::after {
+    color: $checkbox-unchecked;
+    content: '\f057';
+    font-size: 0.7rem;
+  }
+}
+
+.toggle {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+
+  &__control {
+    @extend .unchecked;
+    @include size(48px, 28px);
+    background: $white;
+    border: 1px solid $checkbox-border;
+    border-radius: 100px;
+    box-sizing: border-box;
+    color: transparent;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    user-select: none;
+
+    &::after {
+      @include position(absolute, 2px null null 2px);
+      transition: .3s;
+    }
+  }
+
+  &:disabled {
+    +.toggle__control {
+      background: $checkbox-disabled;
+    }
+  }
+
+  &:checked {
+
+    +.toggle__control {
+      @extend .checked;
+
+      &::after {
+        left: calc(100% - 2px);
+        transform: translateX(-100%);
+      }
+    }
+  }
+}
