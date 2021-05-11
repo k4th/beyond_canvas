@@ -56,6 +56,7 @@ module BeyondCanvas
     def preinstall
       @shop = Shop.create_or_find_by(beyond_api_url: params[:api_url])
       @shop.authenticate(params[:code])
+      @shop.update reseller: @shop.to_session.shop.current[:reseller_name]
 
       redirect_to after_preinstallation_path
     end
