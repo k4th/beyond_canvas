@@ -24,7 +24,7 @@ module BeyondCanvas
       @shop = Shop.create_with(shop_params).create_or_find_by(beyond_api_url: params[:shop][:api_url])
 
       @shop.assign_attributes(shop_params)
-      @shop.reseller = @shop.to_session.shop.current.reseller_name
+      @shop.reseller = @shop.to_session.shop.current[:reseller_name]
 
       if @shop.save
         @shop.authenticate(params[:shop][:code])

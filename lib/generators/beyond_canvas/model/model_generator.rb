@@ -35,7 +35,6 @@ module BeyondCanvas
       def migration_data
         <<RUBY
       t.string :beyond_api_url, null: false
-      t.string :reseller
 
       t.text :encrypted_beyond_access_token,    null: true
       t.text :encrypted_beyond_access_token_iv, null: true
